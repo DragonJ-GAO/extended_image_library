@@ -25,6 +25,7 @@ abstract class ExtendedNetworkImageProvider
     bool printError,
     bool cacheRawData,
     String? imageCacheName,
+    BufferIntercepter? intercepter,
     Duration? cacheMaxAge,
   }) = network_image.ExtendedNetworkImageProvider;
 
