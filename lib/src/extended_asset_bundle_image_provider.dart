@@ -8,11 +8,12 @@ import 'extended_image_provider.dart';
 
 class ExtendedExactAssetImageProvider extends ExactAssetImage
     with ExtendedImageProvider<AssetBundleImageKey> {
-  const ExtendedExactAssetImageProvider(
+  ExtendedExactAssetImageProvider(
     String assetName, {
     AssetBundle? bundle,
     String? package,
     double scale = 1.0,
+    this.intercepter,
     this.cacheRawData = false,
     this.imageCacheName,
   }) : super(assetName, bundle: bundle, package: package, scale: scale);
@@ -27,6 +28,9 @@ class ExtendedExactAssetImageProvider extends ExactAssetImage
   /// The name of [ImageCache], you can define custom [ImageCache] to store this provider.
   @override
   final String? imageCacheName;
+
+  final BufferIntercepter? intercepter;
+
   @override
   Future<ExtendedAssetBundleImageKey> obtainKey(
       ImageConfiguration configuration) {
@@ -74,18 +78,19 @@ class ExtendedExactAssetImageProvider extends ExactAssetImage
       rethrow;
     }
     final Uint8List result = data.buffer.asUint8List();
-    return await instantiateImageCodec(result, decode);
+    return await instantiateImageCodec(result, decode, intercepter);
   }
 }
 
 class ExtendedAssetImageProvider extends AssetImage
     with ExtendedImageProvider<AssetBundleImageKey> {
-  const ExtendedAssetImageProvider(
+  ExtendedAssetImageProvider(
     String assetName, {
     AssetBundle? bundle,
     String? package,
     this.cacheRawData = false,
     this.imageCacheName,
+    this.intercepter,
   }) : super(assetName, bundle: bundle, package: package);
 
   /// Whether cache raw data if you need to get raw data directly.
@@ -100,6 +105,9 @@ class ExtendedAssetImageProvider extends AssetImage
   final String? imageCacheName;
 
   @override
+  final BufferIntercepter? intercepter;
+
+  @override
   Future<ExtendedAssetBundleImageKey> obtainKey(
       ImageConfiguration configuration) {
     final Completer<ExtendedAssetBundleImageKey> completer =
@@ -147,7 +155,7 @@ class ExtendedAssetImageProvider extends AssetImage
     }
 
     final Uint8List result = data.buffer.asUint8List();
-    return await instantiateImageCodec(result, decode);
+    return await instantiateImageCodec(result, decode, intercepter);
   }
 }
 

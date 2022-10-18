@@ -5,9 +5,10 @@ import 'package:flutter/widgets.dart';
 
 class ExtendedMemoryImageProvider extends MemoryImage
     with ExtendedImageProvider<MemoryImage> {
-  const ExtendedMemoryImageProvider(
+  ExtendedMemoryImageProvider(
     Uint8List bytes, {
     double scale = 1.0,
+    this.intercepter,
     this.cacheRawData = false,
     this.imageCacheName,
   }) : super(bytes, scale: scale);
@@ -24,6 +25,9 @@ class ExtendedMemoryImageProvider extends MemoryImage
   final String? imageCacheName;
 
   @override
+  final BufferIntercepter? intercepter;
+
+  @override
   Uint8List get rawImageData => bytes;
   @override
   ImageStreamCompleter loadBuffer(
@@ -36,7 +40,7 @@ class ExtendedMemoryImageProvider extends MemoryImage
 
   Future<ui.Codec> _loadAsync(MemoryImage key, DecoderBufferCallback decode) {
     assert(key == this);
-    return instantiateImageCodec(bytes, decode);
+    return instantiateImageCodec(bytes, decode, intercepter);
   }
 
   @override
@@ -48,7 +52,8 @@ class ExtendedMemoryImageProvider extends MemoryImage
         other.bytes == bytes &&
         other.scale == scale &&
         cacheRawData == other.cacheRawData &&
-        imageCacheName == other.imageCacheName;
+        imageCacheName == other.imageCacheName &&
+        intercepter == other.intercepter;
   }
 
   @override
@@ -57,5 +62,6 @@ class ExtendedMemoryImageProvider extends MemoryImage
         scale,
         cacheRawData,
         imageCacheName,
+        intercepter,
       );
 }

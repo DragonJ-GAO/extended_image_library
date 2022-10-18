@@ -16,7 +16,7 @@ import 'extended_image_provider.dart';
 /// cached size provided here.
 class ExtendedResizeImage extends ImageProvider<_SizeAwareCacheKey>
     with ExtendedImageProvider<_SizeAwareCacheKey> {
-  const ExtendedResizeImage(
+  ExtendedResizeImage(
     this.imageProvider, {
     this.compressionRatio,
     this.maxBytes = 50 << 10,
@@ -71,6 +71,9 @@ class ExtendedResizeImage extends ImageProvider<_SizeAwareCacheKey>
   /// The name of [ImageCache], you can define custom [ImageCache] to store this provider.
   @override
   final String? imageCacheName;
+
+  @override
+  BufferIntercepter? get intercepter => null;
 
   /// Composes the `provider` in a [ResizeImage] only when `cacheWidth` and
   /// `cacheHeight` are not both null.

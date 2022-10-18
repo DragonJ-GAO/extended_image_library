@@ -3,6 +3,9 @@ import 'dart:ui' as ui show Codec, ImmutableBuffer;
 import 'package:extended_image_library/src/extended_resize_image_provider.dart';
 import 'package:flutter/painting.dart' hide imageCache;
 
+/// The buffer data processor
+typedef BufferIntercepter = Uint8List Function(Uint8List buffer);
+
 /// The cached raw image data
 Map<ExtendedImageProvider<dynamic>, Uint8List> rawImageDataMap =
     <ExtendedImageProvider<dynamic>, Uint8List>{};
@@ -20,6 +23,9 @@ mixin ExtendedImageProvider<T extends Object> on ImageProvider<T> {
 
   /// The name of [ImageCache], you can define custom [ImageCache] to store this image.
   String? get imageCacheName;
+
+  /// The buffer data processor.
+  BufferIntercepter? get intercepter;
 
   /// The [ImageCache] which this is stored in it.
   ImageCache get imageCache {
@@ -54,12 +60,13 @@ mixin ExtendedImageProvider<T extends Object> on ImageProvider<T> {
   Future<ui.Codec> instantiateImageCodec(
     Uint8List data,
     DecoderBufferCallback decode,
+    BufferIntercepter? intercepter,
   ) async {
     if (cacheRawData) {
       rawImageDataMap[this] = data;
     }
-    final ui.ImmutableBuffer buffer =
-        await ui.ImmutableBuffer.fromUint8List(data);
+    final ui.ImmutableBuffer buffer = await ui.ImmutableBuffer.fromUint8List(
+        intercepter != null ? intercepter(data) : data);
     return await decode(buffer);
   }
 

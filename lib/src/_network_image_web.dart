@@ -52,6 +52,7 @@ class ExtendedNetworkImageProvider
     this.cacheKey,
     this.printError = true,
     this.cacheRawData = false,
+    this.intercepter,
     this.imageCacheName,
     this.cacheMaxAge,
   });
@@ -100,6 +101,9 @@ class ExtendedNetworkImageProvider
   final Duration? cacheMaxAge;
 
   @override
+  final BufferIntercepter? intercepter;
+
+  @override
   Future<ExtendedNetworkImageProvider> obtainKey(
       ImageConfiguration configuration) {
     return SynchronousFuture<ExtendedNetworkImageProvider>(this);
@@ -144,7 +148,7 @@ class ExtendedNetworkImageProvider
 
     // We use a different method when headers are set because the
     // `ui.webOnlyInstantiateImageCodecFromUrl` method is not capable of handling headers.
-    if (key.headers?.isNotEmpty ?? false) {
+    if (key.headers?.isNotEmpty ?? false || intercepter == null) {
       final Completer<html.HttpRequest> completer =
           Completer<html.HttpRequest>();
       final html.HttpRequest request = httpRequestFactory();
@@ -186,9 +190,7 @@ class ExtendedNetworkImageProvider
             statusCode: request.status!, uri: resolved);
       }
 
-      final ui.ImmutableBuffer buffer =
-          await ui.ImmutableBuffer.fromUint8List(bytes);
-      return decode(buffer);
+      return instantiateImageCodec(bytes, decode, intercepter);
     } else {
       // This API only exists in the web engine implementation and is not
       // contained in the analyzer summary for Flutter.

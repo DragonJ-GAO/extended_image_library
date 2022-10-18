@@ -6,11 +6,12 @@ import 'platform.dart';
 
 class ExtendedFileImageProvider extends FileImage
     with ExtendedImageProvider<FileImage> {
-  const ExtendedFileImageProvider(
+  ExtendedFileImageProvider(
     File file, {
     double scale = 1.0,
     this.cacheRawData = false,
     this.imageCacheName,
+    this.intercepter,
   })  : assert(!kIsWeb, 'not support on web'),
         super(file, scale: scale);
 
@@ -24,6 +25,9 @@ class ExtendedFileImageProvider extends FileImage
   /// The name of [ImageCache], you can define custom [ImageCache] to store this provider.
   @override
   final String? imageCacheName;
+
+  @override
+  final BufferIntercepter? intercepter;
 
   @override
   ImageStreamCompleter loadBuffer(FileImage key, DecoderBufferCallback decode) {
@@ -49,7 +53,7 @@ class ExtendedFileImageProvider extends FileImage
       throw StateError('$file is empty and cannot be loaded as an image.');
     }
 
-    return await instantiateImageCodec(bytes, decode);
+    return await instantiateImageCodec(bytes, decode, intercepter);
   }
 
   @override
@@ -61,7 +65,8 @@ class ExtendedFileImageProvider extends FileImage
         file.path == other.file.path &&
         scale == other.scale &&
         cacheRawData == other.cacheRawData &&
-        imageCacheName == other.imageCacheName;
+        imageCacheName == other.imageCacheName &&
+        intercepter == other.intercepter;
   }
 
   @override
@@ -70,6 +75,7 @@ class ExtendedFileImageProvider extends FileImage
         scale,
         cacheRawData,
         imageCacheName,
+        intercepter,
       );
 
   @override

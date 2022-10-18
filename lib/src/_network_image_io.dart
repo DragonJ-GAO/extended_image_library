@@ -28,6 +28,7 @@ class ExtendedNetworkImageProvider
     this.cacheKey,
     this.printError = true,
     this.cacheRawData = false,
+    this.intercepter,
     this.cancelToken,
     this.imageCacheName,
     this.cacheMaxAge,
@@ -43,6 +44,9 @@ class ExtendedNetworkImageProvider
   /// data here.
   @override
   final bool cacheRawData;
+
+  @override
+  final BufferIntercepter? intercepter;
 
   /// The time limit to request image
   @override
@@ -140,7 +144,7 @@ class ExtendedNetworkImageProvider
           md5Key,
         );
         if (data != null) {
-          result = await instantiateImageCodec(data, decode);
+          result = await instantiateImageCodec(data, decode, intercepter);
         }
       } catch (e) {
         if (printError) {
@@ -156,7 +160,7 @@ class ExtendedNetworkImageProvider
           chunkEvents,
         );
         if (data != null) {
-          result = await instantiateImageCodec(data, decode);
+          result = await instantiateImageCodec(data, decode, intercepter);
         }
       } catch (e) {
         if (printError) {
