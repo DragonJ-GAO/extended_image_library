@@ -3,9 +3,11 @@ description: package library for extended_image, extended_text and extended_text
 version: 3.4.0
 homepage: https://github.com/fluttercandies/extended_image_library
 
+publish_to: "none"
+
 environment:
-  sdk: '>=2.18.0 <3.0.0'
-  flutter: '>=3.3.0'
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   crypto: ^3.0.0
@@ -14,8 +16,3 @@ dependencies:
   http_client_helper: ^2.0.2
   path: ^1.7.0
   path_provider: ^2.0.1
-
-
-
-
-
