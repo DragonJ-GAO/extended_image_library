@@ -155,7 +155,7 @@ class ExtendedNetworkImageProvider
 
       request.open('GET', key.url, async: true);
       request.responseType = 'arraybuffer';
-      key.headers!.forEach((String header, String value) {
+      key.headers?.forEach((String header, String value) {
         request.setRequestHeader(header, value);
       });
 
