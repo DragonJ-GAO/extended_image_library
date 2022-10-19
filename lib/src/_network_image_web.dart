@@ -148,7 +148,7 @@ class ExtendedNetworkImageProvider
 
     // We use a different method when headers are set because the
     // `ui.webOnlyInstantiateImageCodecFromUrl` method is not capable of handling headers.
-    if (key.headers?.isNotEmpty ?? false || intercepter == null) {
+    if (key.headers?.isNotEmpty ?? false || intercepter != null) {
       final Completer<html.HttpRequest> completer =
           Completer<html.HttpRequest>();
       final html.HttpRequest request = httpRequestFactory();
